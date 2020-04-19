@@ -133,7 +133,7 @@ if __name__ == '__main__':
 	replacement = old_replacement
 
 	header('Review file modifications', width)
-	
+
 	files = listFiles(regex)
 	for file in files:
 		after = re.sub(regex, replacement, file)
@@ -144,11 +144,11 @@ if __name__ == '__main__':
 	while confirm.strip().lower() not in ['y', 'n', 'yes', 'no']:
 		confirm = input(' Proceed? (y/n) ' + color('blue', 'black')).strip().lower()
 		print(color(), end='')
-	
+
 	if confirm != 'y' and confirm != 'yes':
 		print(' No modifications were applied.')
 		sys.exit()
-	
+
 	print()
 	header('Renaming files...', width)
 
