@@ -4,8 +4,18 @@ import re
 import sys
 
 # List the files with a regular expression
-def listFiles(regex):
-	return [file for file in os.listdir(os.curdir) if os.path.isfile(file) and bool(re.match(regex, file))]
+def listFiles(regex, subdirs = False):
+	if subdirs:
+		files = []
+		for (dirpath, dirnames, filenames) in os.walk('.'):
+			for file in filenames:
+				path = os.path.join(dirpath, file)
+				if path[:2] == '.\\': path = path[2:]
+				if bool(re.match(regex, path)):
+					files.append(path)
+		return files
+	else:
+		return [file for file in os.listdir(os.curdir) if os.path.isfile(file) and bool(re.match(regex, file))]
 
 # Change the color of text in the terminal
 # Leaving the forground or background blank will reset the color to its default
@@ -88,7 +98,11 @@ if __name__ == '__main__':
 
 	os.system('cls')
 	header('File Renamer Regex', width)
-	for file in listFiles('.'):
+	subdirs = input('\n Search subdirectories? (y/n) ')
+	while subdirs not in ['y', 'n']:
+		subdirs = input('\n Search subdirectories? (y/n) ')
+	subdirs = subdirs == 'y'
+	for file in listFiles('.', subdirs):
 		print(file.center(width))
 
 	regex = ''
@@ -100,7 +114,7 @@ if __name__ == '__main__':
 
 	while(True):
 		try:
-			files = listFiles(regex)
+			files = listFiles(regex, subdirs)
 			print_files_regex(files, regex, width)
 			print(f'\n Press {color("blue", "black", "ENTER")} to proceed')
 		except Exception as e:
@@ -119,7 +133,7 @@ if __name__ == '__main__':
 	old_replacement = replacement
 	while(True):
 		try:
-			files = listFiles(regex)
+			files = listFiles(regex, subdirs)
 			print_files_replacement(files, regex, replacement, width)
 			print(f'\n Press {color("blue", "black", "ENTER")} to proceed')
 		except Exception as e:
@@ -134,7 +148,7 @@ if __name__ == '__main__':
 
 	header('Review file modifications', width)
 
-	files = listFiles(regex)
+	files = listFiles(regex, subdirs)
 	for file in files:
 		after = re.sub(regex, replacement, file)
 		print(f' "{color("red", "black", file)}" will be renamed to "{color("yellow", "black", after)}"')
