@@ -3,7 +3,7 @@ import re
 import sys
 
 # Given a regular expression, list the files that match it, and ask for user input
-def listFiles(regex, subdirs = False):
+def selectFile(regex, subdirs = False):
 	files = []
 	if subdirs:
 		for (dirpath, dirnames, filenames) in os.walk('.'):
