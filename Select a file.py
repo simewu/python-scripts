@@ -41,5 +41,5 @@ def selectFile(regex, subdirs = False):
 	print()
 	return selection
 
-file = listFiles(r'.*.py', False)
+file = selectFile(r'.*', False)
 print(f'You selected "{file}".')
