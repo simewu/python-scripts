@@ -4,10 +4,18 @@ import re
 import sys
 
 # List the files with a regular expression
-def listFiles(regex, subdirs = False):
+def listFiles(regex, directory = ''):
+	path = os.path.join(os.curdir, directory)
+	if path[:2] == './' or path[:2] == '.\\': path = path[2:]
+	return [os.path.join(path, file) for file in os.listdir(path) if os.path.isfile(os.path.join(path, file)) and bool(re.match(regex, file))]
+
+# List the files with a regular expression recursively
+def listFilesRecursive(regex, subdirs = False, directory = ''):
+	path = os.path.join(os.curdir, directory)
+	if path[:2] == './' or path[:2] == '.\\': path = path[2:]
 	if subdirs:
 		files = []
-		for (dirpath, dirnames, filenames) in os.walk('.'):
+		for (dirpath, dirnames, filenames) in os.walk(path):
 			for file in filenames:
 				path = os.path.join(dirpath, file)
 				if path[:2] == '.\\': path = path[2:]
@@ -102,7 +110,7 @@ if __name__ == '__main__':
 	while subdirs not in ['y', 'n']:
 		subdirs = input('\n Search subdirectories? (y/n) ')
 	subdirs = subdirs == 'y'
-	for file in listFiles('.', subdirs):
+	for file in listFilesRecursive('.', '.', subdirs):
 		print(file.center(width))
 
 	regex = ''
@@ -114,7 +122,7 @@ if __name__ == '__main__':
 
 	while(True):
 		try:
-			files = listFiles(regex, subdirs)
+			files = listFilesRecursive(regex, '.', subdirs)
 			print_files_regex(files, regex, width)
 			print(f'\n Press {color("blue", "black", "ENTER")} to proceed')
 		except Exception as e:
@@ -133,7 +141,7 @@ if __name__ == '__main__':
 	old_replacement = replacement
 	while(True):
 		try:
-			files = listFiles(regex, subdirs)
+			files = listFilesRecursive(regex, '.', subdirs)
 			print_files_replacement(files, regex, replacement, width)
 			print(f'\n Press {color("blue", "black", "ENTER")} to proceed')
 		except Exception as e:
