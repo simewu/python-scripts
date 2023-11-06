@@ -10,12 +10,12 @@ def listFiles(regex, directory = ''):
 	return [os.path.join(path, file) for file in os.listdir(path) if os.path.isfile(os.path.join(path, file)) and bool(re.match(regex, file))]
 
 # List the files with a regular expression recursively
-def listFilesRecursive(regex, subdirs = False, directory = ''):
-	path = os.path.join(os.curdir, directory)
-	if path[:2] == './' or path[:2] == '.\\': path = path[2:]
+def listFilesRecursive(regex, subdirs = False, directory = '.'):
+	dirpath = os.path.join(os.curdir, directory)
+	if dirpath[:2] == './' or dirpath[:2] == '.\\': dirpath = dirpath[2:]
 	if subdirs:
 		files = []
-		for (dirpath, dirnames, filenames) in os.walk(path):
+		for (dirpath, dirnames, filenames) in os.walk(dirpath):
 			for file in filenames:
 				path = os.path.join(dirpath, file)
 				if path[:2] == '.\\': path = path[2:]
@@ -23,7 +23,7 @@ def listFilesRecursive(regex, subdirs = False, directory = ''):
 					files.append(path)
 		return files
 	else:
-		return [file for file in os.listdir(os.curdir) if os.path.isfile(file) and bool(re.match(regex, file))]
+		return [file for file in os.listdir(dirpath) if os.path.isfile(file) and bool(re.match(regex, file))]
 
 # Change the color of text in the terminal
 # Leaving the forground or background blank will reset the color to its default
