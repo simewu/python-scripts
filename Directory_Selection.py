@@ -55,18 +55,18 @@ def selectDir(regex, subdirs = False, multiSelect = False):
 		sys.exit()
 
 # Lists files in a directory matching a given regex, optionally including subdirectories
-def listFiles(regex, directory = '', subdirs = True):
+def listFiles(regex = '.*', directory = '', subdirs = True):
 	files = []
 	if subdirs:
 		for root, _, fileNames in os.walk(directory):
 			for fileName in fileNames:
 				filePath = os.path.join(root, fileName)
-				if regex.match(fileName):
+				if re.match(regex, fileName):
 					files.append(filePath)
 	else:
 		path = os.path.abspath(directory)
 		files = [os.path.join(path, file) for file in os.listdir(path) 
-				 if os.path.isfile(os.path.join(path, file)) and regex.match(file)]
+				 if os.path.isfile(os.path.join(path, file)) and re.match(regex, file)]
 	return files
 
 directory = selectDir(r'.*', False)
