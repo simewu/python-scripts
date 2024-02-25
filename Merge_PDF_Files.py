@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-from PyPDF2 import PdfMerger
+import fitz  # PyMuPDF
 
 def main():
 	try:
@@ -32,23 +32,21 @@ def main():
 		print("\nScript interrupted by user. Exiting.")
 		sys.exit()
 
-# Merges a list of PDFs into one
 def merge_pdfs(pdfs):
-	merger = PdfMerger(strict=False)
+	doc = fitz.open()  # Create a new PDF to start merging
 	for pdf in pdfs:
 		try:
 			print(f'Merging "{pdf}"...')
-			with open(pdf, 'rb') as pdf_file:
-				merger.append(pdf_file, import_outline=False)
+			with fitz.open(pdf) as in_doc:  # Open each PDF
+				doc.insert_pdf(in_doc)  # Insert the PDF content into the new document
 			print(f'"{pdf}" merged successfully.')
 		except Exception as e:
 			print(f'Failed to merge file "{pdf}": {e}')
-			# Decide if you want to continue or break based on the error
-			continue  # or break
-
+			continue  # Skip the problematic file
+	
 	output_file = 'MERGED.pdf'
-	merger.write(output_file)
-	merger.close()
+	doc.save(output_file)  # Save the merged document
+	doc.close()
 	print('File order:\n' + '\n'.join(pdfs))
 	print(f'\nMerged file saved as {output_file}')
 
