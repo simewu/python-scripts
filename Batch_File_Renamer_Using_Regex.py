@@ -4,13 +4,13 @@ import re
 import sys
 
 # List the files with a regular expression
-def listFiles(regex, directory = ''):
+def listFiles(regex, directory = '.', subdirs = False):
 	path = os.path.join(os.curdir, directory)
 	if path[:2] == './' or path[:2] == '.\\': path = path[2:]
 	return [os.path.join(path, file) for file in os.listdir(path) if os.path.isfile(os.path.join(path, file)) and bool(re.match(regex, file))]
 
 # List the files with a regular expression recursively
-def listFilesRecursive(regex, subdirs = False, directory = '.'):
+def listFilesRecursive(regex, directory = '.', subdirs = False):
 	dirpath = os.path.join(os.curdir, directory)
 	if dirpath[:2] == './' or dirpath[:2] == '.\\': dirpath = dirpath[2:]
 	if subdirs:
@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
 	header('Review file modifications', width)
 
-	files = listFiles(regex, subdirs)
+	files = listFiles(regex, '.', subdirs)
 	for file in files:
 		after = re.sub(regex, replacement, file)
 		print(f' "{color("red", "black", file)}" will be renamed to "{color("yellow", "black", after)}"')
